@@ -27,16 +27,19 @@ public class CreditCardService {
 
 	@Transactional
 	public void save(CreditCard cc) {
+		log.debug("Saving new credit card : {}", cc);
 		creditCardRepository.save(cc);
 	}
 
 	@Transactional(readOnly = true)
 	public Page<CreditCard> findAllByPage(Pageable pageable) {
+		log.debug("Finding all credit cards by page");
 		return creditCardRepository.findAll(pageable);
 	}
-	
+
 	@Transactional(readOnly = true)
 	public List<CreditCard> findAll() {
+		log.debug("Finding all credit cards");
 		return creditCardRepository.findAll();
 	}
 

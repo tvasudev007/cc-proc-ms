@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vasudev.cardservice.ccprocms.domain.CreditCard;
 import com.vasudev.cardservice.ccprocms.dto.CreditCardDTO;
+import com.vasudev.cardservice.ccprocms.exception.BusinessException;
 import com.vasudev.cardservice.ccprocms.service.CreditCardService;
 
 import io.micrometer.core.annotation.Timed;
@@ -48,10 +49,9 @@ public class CreditcardProcessingResource {
 	 */
 	@RequestMapping(value = "/getall", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Timed
-	public ResponseEntity<?> getAllCreditCards(Pageable pageable) {
+	public ResponseEntity<List<CreditCardDTO>> getAllCreditCards(Pageable pageable) {
 		log.debug("Request to get list of the credit card info");
 		List<CreditCard> creditCards = creditCardService.findAll();
-
 		return new ResponseEntity<>(
 				creditCards.stream().map(CreditCard -> convertToDTO(CreditCard)).collect(Collectors.toList()),
 				HttpStatus.OK);
@@ -64,13 +64,10 @@ public class CreditcardProcessingResource {
 	 */
 	@RequestMapping(value = "/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Timed
-	public ResponseEntity<?> addCreditCard(@RequestBody CreditCardDTO ccDTO) {
-
+	public ResponseEntity<CreditCardDTO> addCreditCard(@RequestBody CreditCardDTO ccDTO) throws BusinessException {
 		log.debug("Request to add a new credit card");
-
 		creditCardService.save(convertDTOToEntity(ccDTO));
-
-		return new ResponseEntity<>(creditCardService.findAll(), HttpStatus.OK);
+		return new ResponseEntity<>(ccDTO, HttpStatus.OK);
 	}
 
 	private CreditCardDTO convertToDTO(CreditCard cc) {
