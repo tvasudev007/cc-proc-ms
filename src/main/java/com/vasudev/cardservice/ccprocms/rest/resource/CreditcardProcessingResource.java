@@ -1,9 +1,14 @@
 package com.vasudev.cardservice.ccprocms.rest.resource;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.expression.ParseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vasudev.cardservice.ccprocms.domain.CreditCard;
+import com.vasudev.cardservice.ccprocms.dto.CreditCardDTO;
 import com.vasudev.cardservice.ccprocms.service.CreditCardService;
 
 import io.micrometer.core.annotation.Timed;
@@ -30,6 +36,9 @@ public class CreditcardProcessingResource {
 	@Autowired
 	private CreditCardService creditCardService;
 
+	@Autowired
+	private ModelMapper modelMapper;
+
 	// TODO add @Secured()
 	/**
 	 * GET /getall -> get list of credit cards by page
@@ -41,7 +50,11 @@ public class CreditcardProcessingResource {
 	@Timed
 	public ResponseEntity<?> getAllCreditCards(Pageable pageable) {
 		log.debug("Request to get list of the credit card info");
-		return new ResponseEntity<>(creditCardService.findAll(), HttpStatus.OK);
+		List<CreditCard> creditCards = creditCardService.findAll();
+
+		return new ResponseEntity<>(
+				creditCards.stream().map(CreditCard -> convertToDTO(CreditCard)).collect(Collectors.toList()),
+				HttpStatus.OK);
 	}
 
 	/**
@@ -51,13 +64,23 @@ public class CreditcardProcessingResource {
 	 */
 	@RequestMapping(value = "/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Timed
-	public ResponseEntity<?> addCreditCard(@RequestBody CreditCard cc) {
+	public ResponseEntity<?> addCreditCard(@RequestBody CreditCardDTO ccDTO) {
 
 		log.debug("Request to add a new credit card");
 
-		creditCardService.save(cc);
+		creditCardService.save(convertDTOToEntity(ccDTO));
 
 		return new ResponseEntity<>(creditCardService.findAll(), HttpStatus.OK);
+	}
+
+	private CreditCardDTO convertToDTO(CreditCard cc) {
+		CreditCardDTO ccDTO = modelMapper.map(cc, CreditCardDTO.class);
+		return ccDTO;
+	}
+
+	private CreditCard convertDTOToEntity(CreditCardDTO ccDTO) throws ParseException {
+		CreditCard cc = modelMapper.map(ccDTO, CreditCard.class);
+		return cc;
 	}
 
 }

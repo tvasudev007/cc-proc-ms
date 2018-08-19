@@ -25,8 +25,8 @@ public class CreditCard implements Serializable {
 	private static final long serialVersionUID = 3536376593909782903L;
 
 	@Id
-	@SequenceGenerator(name = "CREDIT_CARD_GENERATOR", sequenceName = "CREDIT_CARD_SEQ")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "CREDIT_CARD_GENERATOR")
+	@SequenceGenerator(name = "CREDIT_CARD_GENERATOR", sequenceName = "CREDIT_CARD_SEQ", initialValue = 1, allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CREDIT_CARD_GENERATOR")
 	@Column(name = "ID", nullable = false)
 	private Long id;
 
