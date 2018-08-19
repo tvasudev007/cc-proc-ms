@@ -22,10 +22,18 @@ public class ApplicationExceptionHandler {
 
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
-	public @ResponseBody ExceptionResponse handlejsonParseException(final HttpMessageNotReadableException exception,
+	public @ResponseBody ExceptionResponse handlejsonParseException(final HttpMessageNotReadableException httpme,
 			final HttpServletRequest request) {
-		log.error("HttpMessageNotReadableException: {}", exception.getMessage());
-		return new ExceptionResponse(exception.getMessage(), request.getRequestURI());
+		log.error("HttpMessageNotReadableException: {}", httpme.getMessage());
+		return new ExceptionResponse(httpme.getMessage(), request.getRequestURI());
+	}
+
+	@ExceptionHandler(BusinessException.class)
+	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+	public @ResponseBody ExceptionResponse handlejsonParseException(final BusinessException be,
+			final HttpServletRequest request) {
+		log.error("HttpMessageNotReadableException: {}", be.getMessage());
+		return new ExceptionResponse(be.getMessage(), request.getRequestURI());
 	}
 
 	@ExceptionHandler(Exception.class)
@@ -35,5 +43,4 @@ public class ApplicationExceptionHandler {
 		log.error("Exception: {}", exception);
 		return new ExceptionResponse(exception.getMessage(), request.getRequestURI());
 	}
-
 }

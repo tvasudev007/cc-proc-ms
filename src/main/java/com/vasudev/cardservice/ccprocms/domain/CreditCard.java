@@ -34,7 +34,7 @@ public class CreditCard implements Serializable {
 	@Size(max = 255)
 	private String name;
 
-	@Column(name = "CARD_NUMBER")
+	@Column(name = "CARD_NUMBER", unique = true)
 	private Long cardNumber;
 
 	@Column(name = "BALANCE")

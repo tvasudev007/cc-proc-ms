@@ -40,7 +40,6 @@ public class CreditcardProcessingResource {
 	@Autowired
 	private ModelMapper modelMapper;
 
-	// TODO add @Secured()
 	/**
 	 * GET /getall -> get list of credit cards by page
 	 * 
@@ -49,7 +48,7 @@ public class CreditcardProcessingResource {
 	 */
 	@RequestMapping(value = "/getall", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Timed
-	public ResponseEntity<List<CreditCardDTO>> getAllCreditCards(Pageable pageable) {
+	public ResponseEntity<List<CreditCardDTO>> getAllCreditCards() {
 		log.debug("Request to get list of the credit card info");
 		List<CreditCard> creditCards = creditCardService.findAll();
 		return new ResponseEntity<>(
@@ -67,7 +66,7 @@ public class CreditcardProcessingResource {
 	public ResponseEntity<CreditCardDTO> addCreditCard(@RequestBody CreditCardDTO ccDTO) throws BusinessException {
 		log.debug("Request to add a new credit card");
 		creditCardService.save(convertDTOToEntity(ccDTO));
-		return new ResponseEntity<>(ccDTO, HttpStatus.OK);
+		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 	}
 
 	private CreditCardDTO convertToDTO(CreditCard cc) {
