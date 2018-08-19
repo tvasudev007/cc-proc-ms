@@ -1,0 +1,1 @@
+INSERT INTO CREDIT_CARD (ID, NAME, CARD_NUMBER) values (1, 'some club', 123456789);
