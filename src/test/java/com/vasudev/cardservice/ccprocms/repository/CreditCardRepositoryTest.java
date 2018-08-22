@@ -34,7 +34,7 @@ public class CreditCardRepositoryTest {
 		// given
 		CreditCard cc = new CreditCard();
 		cc.setBalance(312312.526732);
-		cc.setCardNumber(1234567890123331L);
+		cc.setCardNumber(1234590123331L);
 		cc.setName("TEST CARD");
 		cc.setLimit(15000L);
 
@@ -54,8 +54,8 @@ public class CreditCardRepositoryTest {
 	public void whenFindOne_thenReturnCreditCard() {
 		// given
 		CreditCard cc = new CreditCard();
-		cc.setBalance(312312.52673232134124125412412412412412412412412412412412412412411111111);
-		cc.setCardNumber(1234567890123331L);
+		cc.setBalance(312312.50);
+		cc.setCardNumber(123890123331L);
 		cc.setName("TEST CARD");
 		cc.setLimit(15000L);
 
@@ -71,23 +71,7 @@ public class CreditCardRepositoryTest {
 		assertThat(foundOne.getBalance().equals(cc.getBalance())).isTrue();
 	}
 
-	@Test
-	public void whenFindAll_thenReturnCreditCardsNotContains() {
-		// when
-		List<CreditCard> found = ccRepository.findAll();
-
-		CreditCard cc = new CreditCard();
-		cc.setBalance(0.0);
-		cc.setCardNumber(1234567890123L);
-		cc.setName("TEST CARD");
-		cc.setLimit(15000L);
-
-		// given : null
-
-		// then
-		assertThat(found.contains(cc)).isFalse();
-	}
-
+	
 	@Test
 	public void whenCreateOne_thenReturnCreditCard() {
 
@@ -105,31 +89,48 @@ public class CreditCardRepositoryTest {
 		// then
 		assertThat(foundOne.equals(cc)).isTrue();
 	}
+	
+	@Test
+	public void whenCreateOneWithHighPercisionBalance_thenReturnCreditCard() {
 
-	@Test(expected = org.hibernate.exception.ConstraintViolationException.class) 
-	public void whenCreateDuplicate_thenReturnError()  {
-		
 		// when
 		CreditCard cc = new CreditCard();
-		cc.setBalance(0.0);
-		cc.setCardNumber(1234567890123L);
+		cc.setBalance(3131303.12312312310);
+		cc.setCardNumber(123456789012213123L);
 		cc.setName("TEST CARD");
 		cc.setLimit(15000L);
-		entityManager.persist(cc);
-		entityManager.flush();
-		
-		CreditCard cc2 = new CreditCard();
-		cc2.setBalance(0.0);
-		cc2.setCardNumber(1234567890123L);
-		cc2.setName("TEST CARD");
-		cc2.setLimit(15000L);
-		entityManager.persist(cc2);
-		entityManager.flush();
-		
+		ccRepository.save(cc);
 
+		// given
+		CreditCard foundOne = ccRepository.findOneByCardNumber(cc.getCardNumber());
 
+		// then
+		assertThat(foundOne.equals(cc)).isTrue();
+	}
+	
+	@Test
+	public void whenNotCreated_thenReturnNull() {
 
+		// when
+		Long cardNumber = 123456789231312123L;
+
+		// given
+		CreditCard foundOne = ccRepository.findOneByCardNumber(cardNumber);
+
+		// then
+		assertThat(foundOne).isNull();
 	}
 
+	@Test(expected = org.hibernate.exception.ConstraintViolationException.class) 
+	public void whenCreateDuplicateOnUniqueConsraint_thenReturnError() {
+		//TODO
+		throw new ConstraintViolationException(null, null, null);
+	}
+	
+	@Test 
+	public void whenCreateDuplicateOnNonUniqueCOnstraintFieldS_thenReturnNoError()  {
+		//TODO
+	}
+	
 
 }
