@@ -22,7 +22,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class CreditCard implements Serializable {
 
-	private static final long serialVersionUID = 3536376593909782903L;
+	private static final long serialVersionUID = 200820181650500L;
 
 	@Id
 	@SequenceGenerator(name = "CREDIT_CARD_GENERATOR", sequenceName = "CREDIT_CARD_SEQ", initialValue = 1, allocationSize = 1)
