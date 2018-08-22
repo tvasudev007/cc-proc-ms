@@ -7,7 +7,6 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.expression.ParseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -29,7 +28,7 @@ import io.micrometer.core.annotation.Timed;
  *
  */
 @RestController
-@RequestMapping(value = "/v1/api/creditcard")
+@RequestMapping(value = "/v1/api")
 public class CreditcardProcessingResource {
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
@@ -46,7 +45,7 @@ public class CreditcardProcessingResource {
 	 * @param pageable
 	 * @return
 	 */
-	@RequestMapping(value = "/getall", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/creditCards", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Timed
 	public ResponseEntity<List<CreditCardDTO>> getAllCreditCards() {
 		log.debug("Request to get list of the credit card info");
@@ -61,7 +60,7 @@ public class CreditcardProcessingResource {
 	 *
 	 * @return
 	 */
-	@RequestMapping(value = "/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/creditCards", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Timed
 	public ResponseEntity<CreditCardDTO> addCreditCard(@RequestBody CreditCardDTO ccDTO) throws BusinessException {
 		log.debug("Request to add a new credit card");

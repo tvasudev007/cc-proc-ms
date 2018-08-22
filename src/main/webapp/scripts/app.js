@@ -1,10 +1,23 @@
-var myApp = angular.module('app', ['ngResource']);
+var myApp = angular.module('app', ['ui.bootstrap','ngResource']);
 
 myApp.config(['$httpProvider', function($httpProvider) {
     $httpProvider.defaults.timeout = 4000;
 }])
 .factory('CreditCard',['$resource', function($resource) {
-  return $resource('/equipment/:eqID'); // Note the full endpoint address
+	
+	const API_URL = '/v1/api/creditCards/:id';
+	const PARAMS  = {};
+	const ACTIONS = null;
+	
+  return $resource(API_URL, PARAMS, {
+	    'query': {
+	        method:  'GET',
+	        isArray: true
+	      },
+	      'create': {
+	          method: 'POST'
+	      }
+  });
 }])
 .filter('ccNumberFormatter', function() {
 	  return function (creditCardNumber) {		    
@@ -13,56 +26,48 @@ myApp.config(['$httpProvider', function($httpProvider) {
 })
 .controller('mainCtrl',['$scope', '$http', '$httpParamSerializer','CreditCard','$timeout',  function($scope, $http, $httpParamSerializer,CreditCard,$timeout) {
 	
-	var recordsSize=5;	
+	const DEFAULT_BAL = 0;
 	
-	$scope.cards = [
-		{ "name":"Ron",
-		  "number":1234567890123,
-		  "balance": 1450.50,
-		  "limit": 2000
-		}
-	];
+	const SUCCESS_MESSAGE = "Card was created successfully!!";
+	
+	$scope.regExpPatternForName = new RegExp("^[a-zA-Z0-9 _#.-]*$");
+	$scope.regExpPatternForCardNumber = new RegExp("^[0-9]{10,19}$");
+	$scope.regExpPatternForLimit = new RegExp("^-?\\d{1,19}$");
+	
+	var init =  function(){
 		
-	$scope.createEquipment = function(equipmentObj){
-		console.log(equipmentObj);
-		Equipment.save(equipmentObj).$promise.then(function(res) {
-		   // success
-			$scope.eq = null;
-			showAlert('alert-success','Successfully created new equipment');
+		$scope.alerts = [];
+		
+		CreditCard.query({}, (result) => {
+			$scope.cards = result;	        
+	    	});
+		};
+	
+		  $scope.closeAlert = function(index) {
+		    $scope.alerts.splice(index, 1);
+		  };
+
+	$scope.addCard = function(){
+		
+		$scope.alerts = [];
+		
+		$scope.cc.balance = DEFAULT_BAL;
+		$scope.cc.cardNumber = $scope.cc.cardNumber.toString();
+		
+		var cardObj = angular.copy($scope.cc);
+		
+		$scope.cc={};
+		
+		CreditCard.create(cardObj).$promise.then(function(res) {
+			$scope.alerts.push({ type:'success', msg: SUCCESS_MESSAGE});
+			$scope.cards.push(cardObj);
 		}, function(err) {
-			$scope.eq = null;
-			showAlert('alert-danger',err.data);
+			$scope.alerts.push({ type:'danger', msg: err.data.message});
 		});	
 	}	
 	
-				
-	$scope.getEquipmentList = function(recordsSize){
-		
-		if(recordsSize && recordsSize>0){
-			
-			var api = '/vasudev-assignment-kone/equipment/search?';		
-			var qs = $httpParamSerializer({limit:recordsSize});		
-			var url= api.concat(qs);
-			
-			$http({
-				  method: 'GET',
-				  url: url
-			}).then(function successCallback(response) {
-					
-					$scope.tableData = response.data;
-					console.log(JSON.stringify($scope.tableData[0].doc));
-			}, function errorCallback(err) {
-					$scope.tableData = null;
-					$scope.hideAlert=false;
-			});
-		} else {			
-			showAlert('alert-danger','Input must be greater than zero');				
-		}			
-
-		$scope.recordSize = null;
-	}	
-
-	$scope.getEquipmentList(recordsSize);
+	init();
+	
 
 }]);
 

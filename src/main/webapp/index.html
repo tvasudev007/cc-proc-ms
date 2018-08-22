@@ -12,9 +12,10 @@
 <title>Credit Card System</title>
 
 <!-- Bootstrap core CSS -->
-<link href="/css/bootstrap.min.css" rel="stylesheet">
-<!-- Bootstrap theme -->
-<link href="/css/bootstrap-theme.min.css" rel="stylesheet">
+<link
+	href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"
+	rel="stylesheet">
+
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 <link href="/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
 
@@ -42,12 +43,7 @@
 	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.js"></script>
 
 <script
-	src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment-with-locales.js"></script>
-<script
-	src="//cdn.rawgit.com/indrimuska/angular-moment-picker/master/dist/angular-moment-picker.min.js"></script>
-<link
-	href="//cdn.rawgit.com/indrimuska/angular-moment-picker/master/dist/angular-moment-picker.min.css"
-	rel="stylesheet">
+	src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.13.1.js"></script>
 
 <script
 	src="https://cdnjs.cloudflare.com/ajax/libs/angular-resource/1.6.9/angular-resource.js"></script>
@@ -58,7 +54,7 @@
 
 </head>
 
-<body ng-controller='mainCtrl'>
+<body ng-controller='mainCtrl' ng-cloak>
 
 
 	<!-- Fixed navbar -->
@@ -71,20 +67,39 @@
 		</div>
 	</nav>
 
+	<div style="margin: 1em;">
+		<alert ng-repeat="alert in alerts" type="{{alert.type}}"
+			close="closeAlert($index)">{{alert.msg}}</alert>
+	</div>
+
+
 	<div class="container" role="main">
 
 		<div class="page-header">
 			<h3>Add</h3>
 		</div>
 
-		<form ng-submit="createEquipment(eq)">
+		<form ng-submit="addCard()">
+
+			<ng-form name="addCardForm" class="form-horizontal" role="form"
+				style="width:750px;">
 
 			<div class="form-group row">
 				<label for="name"
-					class="col-xs-10 col-sm-7 col-form-label col-form-label-sm">Email</label>
+					class="col-xs-10 col-sm-7 col-form-label col-form-label-sm">Name</label>
 				<div class="col-xs-10 col-sm-7">
-					<input type="text" class="form-control form-control-sm" id="name"
-						placeholder="Enter name">
+					<input type="text" class="form-control form-control-sm" name="name"
+						id="name" min="1" ng-maxlength="128" placeholder="Enter name"
+						ng-model="cc.name" required="true"
+						ng-pattern="regExpPatternForName">
+				</div>
+				<div ng-show="addCardForm.name.$invalid">
+					<p class="help-block" ng-show="addCardForm.name.$error.required">This
+						field is required.</p>
+					<p class="help-block" ng-show="addCardForm.name.$error.maxlength">This
+						field cannot be longer than 128 characters.</p>
+					<p class="help-block" ng-show="addCardForm.name.$error.pattern">This
+						field contains invalid numbers.</p>
 				</div>
 			</div>
 
@@ -94,7 +109,21 @@
 					number</label>
 				<div class="col-xs-10 col-sm-7">
 					<input type="text" class="form-control form-control-sm"
-						id="cardNumber" placeholder="Enter card number">
+						name="cardNumber" id="cardNumber" min="1" ng-maxlength="19"
+						placeholder="Enter card number" ng-model="cc.cardNumber"
+						required="true" ng-pattern="regExpPatternForCardNumber">
+				</div>
+
+				<div ng-show="addCardForm.cardNumber.$invalid">
+					<p class="help-block"
+						ng-show="addCardForm.cardNumber.$error.required">This field is
+						required.</p>
+					<p class="help-block"
+						ng-show="addCardForm.cardNumber.$error.maxlength">This field
+						cannot be longer than 19 characters.</p>
+					<p class="help-block"
+						ng-show="addCardForm.cardNumber.$error.pattern">This field
+						contains invalid numbers.</p>
 				</div>
 			</div>
 
@@ -102,12 +131,21 @@
 				<label for="limit"
 					class="col-xs-10 col-sm-7 col-form-label col-form-label-sm">Limit</label>
 				<div class="col-xs-10 col-sm-7">
-					<input type="text" class="form-control form-control-sm" id="limit"
-						placeholder="Enter limit of the account">
+					<input type="number" class="form-control form-control-sm"
+						id="limit" name="limit" placeholder="Enter limit"
+						ng-model="cc.limit" required="true"
+						ng-pattern="regExpPatternForLimit">
+				</div>
+				<div ng-show="addCardForm.limit.$invalid">
+					<p class="help-block" ng-show="addCardForm.limit.$error.required">This
+						field is required.</p>
+					<p class="help-block" ng-show="addCardForm.limit.$error.pattern">This
+						field contains invalid numbers. Length 10-19</p>
 				</div>
 			</div>
 
-			<button type="submit" class="btn btn-primary">Add</button>
+			<button type="submit" class="btn btn-primary"
+				ng-disabled="addCardForm.name.$invalid || addCardForm.cardNumber.$invalid || addCardForm.limit.$invalid">Add</button>
 		</form>
 
 
@@ -129,7 +167,7 @@
 					<tbody>
 						<tr ng-repeat="card in cards">
 							<td>{{card.name}}</td>
-							<td>{{card.number | ccNumberFormatter}}</td>
+							<td>{{card.cardNumber | ccNumberFormatter}}</td>
 							<td>{{card.balance | currency:'£'}}</td>
 							<td>{{card.limit | currency:'£'}}</td>
 						</tr>
@@ -137,7 +175,7 @@
 				</table>
 			</div>
 		</div>
-		
+
 	</div>
 	<!-- /container -->
 </body>
