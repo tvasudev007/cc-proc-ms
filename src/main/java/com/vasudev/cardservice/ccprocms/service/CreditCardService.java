@@ -33,9 +33,15 @@ public class CreditCardService {
 	@Autowired
 	private CreditCardRepository creditCardRepository;
 
+	/**
+	 * To persist a new credit card
+	 * 
+	 * @param cc
+	 * @throws BusinessException
+	 */
 	@Transactional(propagation = Propagation.REQUIRED)
 	public void save(CreditCard cc) throws BusinessException {
-		
+
 		log.trace("Validating credit card");
 
 		Long ccNumber = cc.getCardNumber();
@@ -44,8 +50,7 @@ public class CreditCardService {
 			throw new BusinessException(BusinessException.DUPLICATE_CC_NUM);
 		}
 
-		if (!CreditCardValidatorUtil.ValidateCCUsingLuhn(ccNumber)
-				|| !Long.toString(ccNumber).matches(REGEX_CARD_NUMBER)) {
+		if (!CreditCardValidatorUtil.ValidateCCUsingLuhn(ccNumber) || !Long.toString(ccNumber).matches(REGEX_CARD_NUMBER)) {
 			throw new BusinessException(BusinessException.INVALID_CC_NUM);
 		}
 
@@ -65,18 +70,35 @@ public class CreditCardService {
 		creditCardRepository.save(cc);
 	}
 
+	/**
+	 * Get credit cards by page
+	 * 
+	 * @param pageable
+	 * @return
+	 */
 	@Transactional(readOnly = true)
 	public Page<CreditCard> findAllByPage(Pageable pageable) {
 		log.trace("Finding all credit cards by page");
 		return creditCardRepository.findAll(pageable);
 	}
 
+	/**
+	 * Get all credit cards stored
+	 * 
+	 * @return
+	 */
 	@Transactional(readOnly = true)
 	public List<CreditCard> findAll() {
 		log.trace("Finding all credit cards");
 		return creditCardRepository.findAll();
 	}
 
+	/**
+	 * To check for exisiting card number
+	 * 
+	 * @param ccNumber
+	 * @return
+	 */
 	private CreditCard unitaryCheck(Long ccNumber) {
 		log.trace("card number unitary check");
 		return creditCardRepository.findOneByCardNumber(ccNumber);

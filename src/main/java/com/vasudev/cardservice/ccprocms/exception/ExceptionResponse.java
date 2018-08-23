@@ -4,6 +4,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 /**
+ * Global ExceptionResponse DTO class
+ * 
  * @author vasudev007
  *
  */
@@ -12,7 +14,7 @@ public class ExceptionResponse {
 	private String message;
 
 	private String reqURI;
-	
+
 	public ExceptionResponse() {
 	}
 

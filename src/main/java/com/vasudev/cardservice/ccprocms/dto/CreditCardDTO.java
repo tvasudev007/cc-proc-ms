@@ -4,6 +4,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 /**
+ * DTO for credit card
+ * 
  * @author vasudev007
  *
  */

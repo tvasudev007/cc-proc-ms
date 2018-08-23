@@ -40,32 +40,31 @@ public class CreditcardProcessingResource {
 	private ModelMapper modelMapper;
 
 	/**
-	 * GET /getall -> get list of credit cards by page
+	 * GET /creditCards -> get list of credit cards by page
 	 * 
-	 * @param pageable
-	 * @return
+	 * @return ResponseEntity<List<CreditCardDTO>>
 	 */
 	@RequestMapping(value = "/creditCards", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Timed
 	public ResponseEntity<List<CreditCardDTO>> getAllCreditCards() {
 		log.debug("Request to get list of the credit card info");
 		List<CreditCard> creditCards = creditCardService.findAll();
-		return new ResponseEntity<>(
-				creditCards.stream().map(CreditCard -> convertToDTO(CreditCard)).collect(Collectors.toList()),
-				HttpStatus.OK);
+		return new ResponseEntity<>(creditCards.stream().map(CreditCard -> convertToDTO(CreditCard)).collect(Collectors.toList()), HttpStatus.OK);
 	}
 
 	/**
-	 * POST /add -> Add a new credit card
-	 *
+	 * POST /creditCards -> Add a new credit card
+	 * 
+	 * @param ccDTO
 	 * @return
+	 * @throws BusinessException
 	 */
 	@RequestMapping(value = "/creditCards", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Timed
 	public ResponseEntity<CreditCardDTO> addCreditCard(@RequestBody CreditCardDTO ccDTO) throws BusinessException {
 		log.debug("Request to add a new credit card");
 		creditCardService.save(convertDTOToEntity(ccDTO));
-		return new ResponseEntity<>(HttpStatus.ACCEPTED);
+		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
 	private CreditCardDTO convertToDTO(CreditCard cc) {

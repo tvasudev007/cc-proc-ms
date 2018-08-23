@@ -1,8 +1,21 @@
 package com.vasudev.cardservice.ccprocms.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Utility class to validate credit card number
+ *
+ */
 public class CreditCardValidatorUtil {
 
+	private static final Logger log = LoggerFactory.getLogger(CreditCardValidatorUtil.class);
+
 	public static Boolean ValidateCCUsingLuhn(Long creditCardNumber) {
+
+		log.trace("Creditcard number: {}", creditCardNumber);
+
+		Boolean isCardValid = false;
 
 		String number = Long.toString(creditCardNumber);
 		//
@@ -22,6 +35,9 @@ public class CreditCardValidatorUtil {
 				}
 			}
 		}
-		return (oddSum + evenSum) % 10 == 0;
+
+		isCardValid = (oddSum + evenSum != 0) && (oddSum + evenSum) % 10 == 0;
+		log.trace("Is card Valid: {}", isCardValid);
+		return isCardValid;
 	}
 }

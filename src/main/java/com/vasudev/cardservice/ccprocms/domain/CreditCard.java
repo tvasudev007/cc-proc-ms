@@ -17,6 +17,10 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+/**
+ * Entity class for credit card
+ *
+ */
 @Entity
 @Table(name = "credit_card")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)

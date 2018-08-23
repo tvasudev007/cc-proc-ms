@@ -10,14 +10,14 @@ import org.springframework.data.repository.query.Param;
 import com.vasudev.cardservice.ccprocms.domain.CreditCard;
 
 /**
- * @author vasudev007
+ * Repository class to manage credit card entity
  *
  */
 public interface CreditCardRepository extends JpaRepository<CreditCard, Long> {
 
 	Page<CreditCard> findAll(Pageable pageable);
-	
+
 	List<CreditCard> findAll();
-	
+
 	CreditCard findOneByCardNumber(@Param("cardNumber") Long cardNumber);
 }

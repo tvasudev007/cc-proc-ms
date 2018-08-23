@@ -18,17 +18,16 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig {
+
 	@Bean
 	public Docket api() {
-		return new Docket(DocumentationType.SWAGGER_2).select()
-				.apis(RequestHandlerSelectors.basePackage("com.vasudev.cardservice")).paths(PathSelectors.ant("/v1/**"))
-				.build().apiInfo(apiInfo());
+		return new Docket(DocumentationType.SWAGGER_2).select().apis(RequestHandlerSelectors.basePackage("com.vasudev.cardservice"))
+				.paths(PathSelectors.ant("/v1/**")).build().apiInfo(apiInfo());
 
 	}
 
 	private ApiInfo apiInfo() {
-		return new ApiInfoBuilder().title("Swagger Credit Card Proc Service")
-				.description("Credit card processing service API Description").license("Apache 2.0")
+		return new ApiInfoBuilder().title("Swagger Credit Card system").description("Credit card system API Description").license("Apache 2.0")
 				.licenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html").version("1.0.0").build();
 	}
 }
